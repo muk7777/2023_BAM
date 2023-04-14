@@ -44,7 +44,7 @@ public class Main {
 					Article article = articles.get(i);
 					System.out.printf("%d	|	%s\n", article.id, article.title);
 				}
-			
+			System.out.println();
 			} 		
 		}
 		sc.close();
