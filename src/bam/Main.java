@@ -5,15 +5,21 @@ import java.util.Scanner;
 import bam.util.Util;
 
 public class Main {
+	static List<Article> articles; 
+	static int lastArticleId;
+	static {
+		articles = new ArrayList<>();
+		lastArticleId = 0;
+	}
+	
 	public static void main(String[] args) {
 		
 		System.out.println("== 프로그램 시작 ==");
 		
 		Scanner sc = new Scanner(System.in);
 		
-		int lastArticleId = 0;
+		makeTestData();
 		
-		List<Article> articles = new ArrayList<>(); 
 		
 		while (true) {
 			System.out.println("명령어) ");
@@ -32,7 +38,7 @@ public class Main {
 				
 				
 				int id = ++lastArticleId;
-				Article article = new Article(id, new Util().getNowDateStr(), body, title);
+				Article article = new Article(id, new Util().getNowDateStr(), title, body);
 				articles.add(article);
 				
 				System.out.printf("%d번 글이 생성되었습니다.\n", lastArticleId);
@@ -145,6 +151,15 @@ public class Main {
 		sc.close();
 		System.out.println("== 프로그램 끝 ==");
 	}
+	private static void makeTestData() {
+		System.out.println("게시글 테스트 데이터5개를 생성합니다.");
+		for (int i = 1; i <= 5; i++) {
+			int id = ++lastArticleId;
+			String title = "제목" + i ;
+			String body = "내용" + i ;
+			articles.add(new Article(id, new Util().getNowDateStr(), title, body));
+		}
+	}
 }
 
 class Article {
@@ -153,7 +168,7 @@ class Article {
 	String title;
 	String body;
 	
-	Article (int id, String regDate, String body, String title) {
+	Article (int id, String regDate, String title, String body) {
 		this.id = id;
 		this.regDate = regDate;
 		this.title = title;
