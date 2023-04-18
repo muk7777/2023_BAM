@@ -5,15 +5,20 @@ import java.util.List;
 import java.util.Scanner;
 
 import bam.dto.Article;
+import bam.dto.Member;
 import bam.util.Util;
 
 public class App {
 	private List<Article> articles; 
+	private List<Member> members; 
 	private int lastArticleId;
+	private int lastMemberId;
 	
 	public App() {
-		articles = new ArrayList<>();
-		lastArticleId = 0;
+		this.articles = new ArrayList<>();
+		this.members = new ArrayList<>();
+		this.lastArticleId = 0;
+		this.lastMemberId = 0;
 	}
 	
 	public void run() {
@@ -32,7 +37,47 @@ public class App {
 				break;
 			}
 				
-			if (cmd.equals("article write")) {
+			if (cmd.equals("member join")) {
+				
+				String memberId = null;
+				while (true) {
+					
+					System.out.println("== 회원가입 ==");
+					System.out.printf("로그인 아이디 : ");
+					memberId = sc.nextLine();
+					
+					if (isMemberIdDupCheck(memberId)) {
+						System.out.printf("%s는 이미 존재하는 아이디 입니다.\n", memberId);
+						continue;
+					}
+					break;
+				}
+				
+				String pw = null;
+				String pwCheck = null;
+				
+				while (true) {
+					System.out.printf("로그인 비밀번호 : ");
+					pw = sc.nextLine();
+					System.out.printf("로그인 비밀번호 확인 : ");
+					pwCheck = sc.nextLine();
+					
+					if (pw.equals(pwCheck) == false) {
+						System.out.println("비밀번호가 일치하지 않습니다.");
+						continue;
+					}
+					break;
+				}
+				
+				System.out.printf("이름 : ");
+				String name = sc.nextLine();
+				
+				int id = ++this.lastMemberId;
+				members.add(new Member(id, memberId, pw, name, new Util().getNowDateStr()));
+				
+				System.out.printf("%s회원님이 가입되었습니다.\n", name);
+				
+			} else if (cmd.equals("article write")) {
 				System.out.println("== 게시물 작성하기 ==");
 				System.out.printf("제목 : ");
 				String title = sc.nextLine();
@@ -204,5 +249,14 @@ public class App {
 			}
 		}		
 		return true;
+	}
+	
+	private boolean isMemberIdDupCheck(String memberId) {
+		for (Member member : members) {
+			if (member.memberId.equals(memberId)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
