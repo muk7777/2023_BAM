@@ -13,11 +13,13 @@ public class MemberController extends Controller {
 	private Scanner sc;
 	private int lastMemberId;
 	private String cmd;
+	private Member loginedMember;
 	
 	public MemberController(List<Member> members, Scanner sc) {
 		this.members = members;
 		this.sc = sc;
 		this.lastMemberId = 0;
+		this.loginedMember = null;
 	}
 	
 	@Override
@@ -31,6 +33,9 @@ public class MemberController extends Controller {
 		case "login":
 			doLogin();
 			break;
+		case "logout":
+			doLogout();
+			break;
 		default:
 			System.out.println("명령어를 확인해주세요.");
 			break;
@@ -38,6 +43,12 @@ public class MemberController extends Controller {
 	}
 	
 	private void doJoin() {
+		
+		if (this.loginedMember != null) {
+			System.out.println("로그아웃 후 이용해주세요.");
+			return;
+		}
+		
 		System.out.println("== 회원가입 ==");
 		
 		String loginId = null;
@@ -78,6 +89,12 @@ public class MemberController extends Controller {
 	}
 	
 	private void doLogin() {
+		
+		if (this.loginedMember != null) {
+			System.out.println("로그아웃 후 이용해주세요.");
+			return;
+		}
+		
 		System.out.println("== 로그인 ==");
 		
 		System.out.printf("로그인 아이디 : ");
@@ -85,7 +102,7 @@ public class MemberController extends Controller {
 		System.out.printf("로그인 비밀번호 : ");
 		String loginPw = sc.nextLine();
 		
-		Member foundMember = isLoginId(loginId);
+		Member foundMember = getMemberByLoginId(loginId);
 		if (foundMember == null) {
 			System.out.println("일치하는 회원이 없습니다.");
 			return;
@@ -95,9 +112,35 @@ public class MemberController extends Controller {
 			return;
 		}
 		
+		this.loginedMember = foundMember;
 		System.out.printf("%s님 환영합니다.\n",foundMember.name);
 	}
 	
+	private void doLogout() {
+		if (this.loginedMember == null) {
+			System.out.println("로그인 상태가 아닙니다.");
+			return;
+		}
+		this.loginedMember = null;
+		System.out.println("로그아웃 되었습니다.");
+	}
+	
+	private boolean isloginIdDupCheck(String loginId) {
+		
+		if (getMemberByLoginId(loginId) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	private Member getMemberByLoginId(String loginId) {
+		for (Member member : members) {
+			if (member.loginId.equals(loginId)) {
+				return member;
+			}
+		}
+		return null;
+	}
 	public void makeTestData() {
 		System.out.println("회원 테스트 데이터3개를 생성합니다.");
 		for (int i = 1; i <= 3; i++) {
@@ -108,23 +151,5 @@ public class MemberController extends Controller {
 			
 			members.add(new Member(id, loginId, loginPw, name, new Util().getNowDateStr() ));
 		}
-	}
-	
-	private boolean isloginIdDupCheck(String loginId) {
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return true; 
-			}
-		}
-		return false;
-	}
-	
-	private Member isLoginId(String loginId) {
-		for (Member member : members) {
-			if (member.loginId.equals(loginId)) {
-				return member;
-			}
-		}
-		return null;
 	}
 }
