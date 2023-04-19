@@ -7,19 +7,45 @@ import java.util.Scanner;
 import bam.dto.Article;
 import bam.util.Util;
 
-public class ArticleController {
+public class ArticleController extends Controller {
 	
 	private int lastArticleId;
 	private List<Article> articles;
 	private Scanner sc;
+	private String cmd;
+	
 	
 	public ArticleController(List<Article> articles, Scanner sc) {
 		this.articles = articles;
 		this.sc = sc;
 		this.lastArticleId = 0;
 	}
+	@Override
+	public void doAction(String cmd, String methodName) {
+		this.cmd = cmd;
+		switch(methodName) {
+		case "write": 
+			doWrite();
+			break;
+		case "list": 
+			showList();
+			break;
+		case "detail": 
+			showDetail();
+			break;
+		case "modify": 
+			doModify();
+			break;
+		case "delete": 
+			doDelete();
+			break;
+		default:
+			System.out.println("명령어를 확인해주세요.");
+			break;
+		}
+	}
 	
-	public void doWrite() {
+	private void doWrite() {
 		
 			System.out.println("== 게시물 작성하기 ==");
 			System.out.printf("제목 : ");
@@ -35,7 +61,7 @@ public class ArticleController {
 			System.out.printf("%d번 글이 생성되었습니다.\n", lastArticleId);
 	}
 	
-	public void showList(String cmd) {
+	private void showList() {
 		
 		if (articles.size() == 0) {
 			System.out.println("존재하는 게시물이 없습니다.");
@@ -69,25 +95,25 @@ public class ArticleController {
 		}
 	}
 	
-	public void doModify(String cmd) {
+	private void doModify() {
 		if (articles.size() == 0) {
 			System.out.println("존재하는 게시물이 없습니다.");
 			return;
 		}
 		
-		String[] cmdBite = cmd.split(" ");
+		String[] cmdBits = cmd.split(" ");
 		
-		if (cmdBite[2].equals("")) {
-			System.out.println("게시물 번호가 입력되지 않았습니다.");
+		if (cmdBits.length == 2) {
+			System.out.println("명령어를 확인해주세요.");
 			return;
 		}
 		
-		if (CheckNumber(cmdBite[2]) == false) {
+		if (CheckNumber(cmdBits[2]) == false) {
 			System.out.println("숫자만 입력해주세요.");
 			return;
 		}
 		
-		int id = Integer.parseInt(cmdBite[2]);
+		int id = Integer.parseInt(cmdBits[2]);
 		Article foundArticle = getArticleById(id);
 	
 		
@@ -113,15 +139,19 @@ public class ArticleController {
 		System.out.printf("%d번 게시물이 수정되었습니다.\n", id);
 		
 	}
-	public void doDelete(String cmd) {
+	private void doDelete() {
 		if (articles.size() == 0) {
 			System.out.println("존재하는 게시물이 없습니다.");
 			return;
 		}
 		
-		int id = Integer.parseInt(cmd.substring(14).trim());
+		String[] cmdBits = cmd.split(" ");
 		
-		
+		if (cmdBits.length == 2) {
+			System.out.println("명령어를 확인해주세요.");
+			return;
+		}
+		int id = Integer.parseInt(cmdBits[2]);
 		Article foundArticle = getArticleById(id);
 		
 		if (foundArticle == null) {
@@ -133,13 +163,20 @@ public class ArticleController {
 		System.out.printf("%d번 게시물이 삭제되었습니다.\n", id);
 	}
 	
-	public void showDetail(String cmd) {
+	private void showDetail() {
 		if (articles.size() == 0) {
 			System.out.println("존재하는 게시물이 없습니다.");
 			return;
 		}
 		
-		int id = Integer.parseInt(cmd.substring(14).trim());
+		String[] cmdBits = cmd.split(" ");
+		
+		if (cmdBits.length == 2) {
+			System.out.println("명령어를 확인해주세요.");
+			return;
+		}
+		int id = Integer.parseInt(cmdBits[2]);
+		
 		Article foundArticle = getArticleById(id);
 		
 		if (foundArticle == null) {
@@ -193,5 +230,4 @@ public class ArticleController {
 		}		
 		return true;
 	}
-
 }

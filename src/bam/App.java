@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import bam.controller.ArticleController;
+import bam.controller.Controller;
 import bam.controller.MemberController;
 import bam.dto.Article;
 import bam.dto.Member;
@@ -25,7 +26,9 @@ public class App {
 		
 		MemberController memberController = new MemberController(members, sc);
 		ArticleController articleController = new ArticleController(articles, sc);
+
 		articleController.makeTestData();
+		memberController.makeTestData();
 		
 		while (true) {
 			System.out.println("명령어) ");
@@ -34,29 +37,31 @@ public class App {
 			if (cmd.equals("exit")) {
 				break;
 			}
+			
+			String[] cmdBits = cmd.split(" ");
+			
+			if (cmdBits.length == 1) {
+				System.out.println("명령어를 확인해주세요.");
+				continue;
+			}
+			
+			String controllerName = cmdBits[0];
+			String methodName = cmdBits[1];
+			
+			Controller controller = null;
 				
-			if (cmd.equals("member join")) {
-				memberController.doJoin();
-				
-			} else if (cmd.equals("article write")) {
-				articleController.doWrite();
-				
-			} else if (cmd.startsWith("article list")) {
-				articleController.showList(cmd);
-				
-			} else if (cmd.startsWith("article detail ")) {
-				articleController.showDetail(cmd);
-				
-			} else if (cmd.startsWith("article modify ")) {
-				articleController.doModify(cmd);
-				
-			} else if (cmd.startsWith("article delete ")) {
-				articleController.doDelete(cmd);
-				
+			if (controllerName.equals("member")) {
+				controller = memberController;
+			} else if (controllerName.equals("article")) {
+				controller = articleController;
 			} else {
 				System.out.printf("%s는 존재하지 않는 명령어 입니다.\n", cmd);
+				continue;
 			}
+			controller.doAction(cmd, methodName);
 		}
+		
+		
 		sc.close();
 		System.out.println("== 프로그램 끝 ==");
 	}
