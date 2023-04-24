@@ -58,6 +58,28 @@ public class App {
 				System.out.printf("%s는 존재하지 않는 명령어 입니다.\n", cmd);
 				continue;
 			}
+			
+			String actionName = controllerName + "/" + methodName;
+			
+			switch(actionName) {
+			case "article/write":
+			case "article/modify":
+			case "article/delete":
+			case "member/logout":
+				if (Controller.loginedMember != null) {
+					System.out.println("로그인 상태가 아닙니다.");
+					continue;
+				}
+				break;
+			case "member/join":
+			case "member/login":
+				if (Controller.loginedMember != null) {
+					System.out.println("로그아웃 후 이용해주세요.");
+					continue;
+				}
+				break;
+			}
+			
 			controller.doAction(cmd, methodName);
 		}
 		

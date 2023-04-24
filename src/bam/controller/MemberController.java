@@ -3,7 +3,6 @@ package bam.controller;
 import java.util.List;
 import java.util.Scanner;
 
-import bam.dto.Article;
 import bam.dto.Member;
 import bam.util.Util;
 
@@ -13,13 +12,11 @@ public class MemberController extends Controller {
 	private Scanner sc;
 	private int lastMemberId;
 	private String cmd;
-	private Member loginedMember;
 	
 	public MemberController(List<Member> members, Scanner sc) {
 		this.members = members;
 		this.sc = sc;
 		this.lastMemberId = 0;
-		this.loginedMember = null;
 	}
 	
 	@Override
@@ -43,11 +40,6 @@ public class MemberController extends Controller {
 	}
 	
 	private void doJoin() {
-		
-		if (this.loginedMember != null) {
-			System.out.println("로그아웃 후 이용해주세요.");
-			return;
-		}
 		
 		System.out.println("== 회원가입 ==");
 		
@@ -90,11 +82,6 @@ public class MemberController extends Controller {
 	
 	private void doLogin() {
 		
-		if (this.loginedMember != null) {
-			System.out.println("로그아웃 후 이용해주세요.");
-			return;
-		}
-		
 		System.out.println("== 로그인 ==");
 		
 		System.out.printf("로그인 아이디 : ");
@@ -112,16 +99,12 @@ public class MemberController extends Controller {
 			return;
 		}
 		
-		this.loginedMember = foundMember;
+		loginedMember = foundMember;
 		System.out.printf("%s님 환영합니다.\n",foundMember.name);
 	}
 	
 	private void doLogout() {
-		if (this.loginedMember == null) {
-			System.out.println("로그인 상태가 아닙니다.");
-			return;
-		}
-		this.loginedMember = null;
+		loginedMember = null;
 		System.out.println("로그아웃 되었습니다.");
 	}
 	
